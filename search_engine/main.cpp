@@ -1,7 +1,9 @@
 #include <iostream>
+#include "ConverterJSON.h"
 
 int main()
 {
-  std::cout << "Hello, World!" << std::endl;
+  ConverterJSON conv;
+  std::vector<std::string> list = conv.GetTextDocuments();
   return 0;
 }
