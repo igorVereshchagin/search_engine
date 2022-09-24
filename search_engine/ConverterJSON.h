@@ -6,6 +6,10 @@
 #include <vector>
 #include <string>
 #include "nlohmann/json.hpp"
+#include <exception>
+
+class MissingConfig : public std::exception {};
+class EmptyConfig : public std::exception {};
 
 class ConverterJSON
 {
@@ -37,22 +41,17 @@ private:
   std::string name = "default name";
   std::string version = "0.1";
   int maxResponses = 5;
-  static void parseFiles(const nlohmann::json &dict, std::vector<std::string> &list)
+  static void readDict(const nlohmann::json &dict, std::vector<std::string> &list)
   {
     for (auto it = dict.begin(); it != dict.end(); it++)
       list.push_back(it.value());
   }
-  void parseConfig(const nlohmann::json &dict)
+  auto parseConfig(const nlohmann::json &dict, const std::string key)
   {
     for (auto it = dict.begin(); it != dict.end(); it++)
-    {
-      if (it.key() == "name")
-        name = it.value();
-      else if (it.key() == "version")
-        version = it.value();
-      else if (it.key() == "max_responses")
-        maxResponses = it.value();
-    }
+      if (it.key() == key)
+        return it.value();
+    return dict.end().value();
   }
 };
 
