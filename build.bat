@@ -21,6 +21,9 @@ if not %errorlevel%==0 (
 )
 
 if [%1] == [] (
+    call build.bat inc
+    goto end
+) else if [%1] == [all] (
     call build.bat clean
     call build.bat cmake
     call build.bat inc
@@ -29,11 +32,10 @@ if [%1] == [] (
     set target=%1
 )
 
-echo %target%
-
 if %target%==clean goto tgt_clean
 if %target%==cmake goto tgt_cmake
 if %target%==inc goto tgt_inc
+echo invalid target %target%
 goto end
 
 
@@ -44,7 +46,7 @@ goto end
 :tgt_cmake
 if not exist .\build mkdir build
 cd build
-cmake -G Ninja ../
+cmake -G Ninja ../search_engine
 if not %errorlevel%==0 goto end
 cd ..
 goto end
