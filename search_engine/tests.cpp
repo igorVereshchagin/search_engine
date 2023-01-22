@@ -1,6 +1,8 @@
 //
 // Created by igora on 09.10.2022.
 //
+#include "InvertedIndex.h"
+#include "gtest/gtest.h"
 
 using namespace std;
 void TestInvertedIndexFunctionality(
@@ -64,3 +66,4 @@ const vector<vector<Entry>> expected = {
   }
 };
 TestInvertedIndexFunctionality(docs, requests, expected);
+}

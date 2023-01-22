@@ -1,0 +1,17 @@
+{
+    "C_Cpp.default.includePath": [
+        "./search_engine",
+        "./externals/nlohmann_json/include",
+        "./build/_deps/googletest-src/googletest/include"
+    ],
+    "files.associations": {
+        "vector": "cpp",
+        "new": "cpp",
+        "algorithm": "cpp",
+        "cstdlib": "cpp",
+        "valarray": "cpp",
+        "cmath": "cpp"
+    },
+    "C_Cpp.default.compilerPath": "C:/tools/mingw/x86_64-8.1.0-release-posix-seh-rt_v6-rev0/mingw64/bin/x86_64-w64-mingw32-gcc.exe",
+    "C_Cpp.default.intelliSenseMode": "gcc-x86"
+}

@@ -34,7 +34,7 @@ public:
 
 private:
   std::vector<std::string> docs;
-  std::map<std::string, std::vector<Entry>> freqDictionary
+  std::map<std::string, std::vector<Entry>> freqDictionary;
 };
 
 

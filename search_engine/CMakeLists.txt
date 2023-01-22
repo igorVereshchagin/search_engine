@@ -30,6 +30,18 @@ FetchContent_MakeAvailable(googletest)
 enable_testing()
 include(GoogleTest)
 
-add_executable(search_engine main.cpp ConverterJSON.cpp ConverterJSON.h)
+set (headers
+  ConverterJSON.h 
+  InvertedIndex.h
+  )
+
+set (src
+  main.cpp
+  ConverterJSON.cpp 
+  InvertedIndex.cpp
+  tests.cpp
+  )
+
+add_executable(search_engine ${src} ${headers})
 target_link_libraries(search_engine PRIVATE nlohmann_json::nlohmann_json gtest_main)
 gtest_discover_tests(search_engine)
