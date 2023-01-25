@@ -7,6 +7,8 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <queue>
+#include <mutex>
 
 struct Entry {
   size_t docId, count;
@@ -33,8 +35,10 @@ public:
   std::vector<Entry> GetWordCount(const std::string& word);
 
 private:
+  static void UpdateDocumentTask(InvertedIndex* pThis, std::queue<std::pair<size_t, std::string*>> *inQueue, std::mutex *queueLock);
   std::vector<std::string> docs;
   std::map<std::string, std::vector<Entry>> freqDictionary;
+  std::mutex dictLock;
 };
 
 
