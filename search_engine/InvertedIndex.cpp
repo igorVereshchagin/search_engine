@@ -7,7 +7,7 @@
 #include <sstream>
 #include <utility>
 
-void InvertedIndex::UpdateDocumentTask(InvertedIndex* pThis, std::queue<std::pair<size_t, std::string*>> *inQueue, std::mutex *queueLock)
+void InvertedIndex::UpdateDocumentTask(InvertedIndex* pThis, std::queue<std::pair<size_t, std::string*>> *inQueue, std::mutex *queueLock, std::mutex *dictLock)
 {
   bool queueNotEmpty;
   do
@@ -32,7 +32,7 @@ void InvertedIndex::UpdateDocumentTask(InvertedIndex* pThis, std::queue<std::pai
     while (!ss.eof())
     {
       ss >> word;
-      pThis->dictLock.lock();
+      dictLock->lock();
       bool found = false;
       for (auto it = pThis->freqDictionary[word].begin(); it != pThis->freqDictionary[word].end(); it++)
       {
@@ -50,7 +50,7 @@ void InvertedIndex::UpdateDocumentTask(InvertedIndex* pThis, std::queue<std::pai
         newEntry.count = 1;
         pThis->freqDictionary[word].push_back(newEntry);
       }
-      pThis->dictLock.unlock();
+      dictLock->unlock();
     }
   }while (queueNotEmpty);
 }
@@ -66,9 +66,10 @@ void InvertedIndex::UpdateDocumentBase(std::vector<std::string> inputDocs)
     inputQueue.push(std::make_pair(id++, &(*it)));
   }
   std::mutex queueLock;
+  std::mutex dictLock;
   std::thread *updateThreads[maxThreads];
   for (int i = 0; i < maxThreads; i++)
-    updateThreads[i] = new std::thread(InvertedIndex::UpdateDocumentTask, this, &inputQueue, &queueLock);
+    updateThreads[i] = new std::thread(InvertedIndex::UpdateDocumentTask, this, &inputQueue, &queueLock, &dictLock);
   for (int i = 0; i < maxThreads; i++)
     updateThreads[i]->join();
 }

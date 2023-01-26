@@ -22,6 +22,7 @@ class InvertedIndex
 {
 public:
   InvertedIndex() = default;
+  InvertedIndex(const InvertedIndex& index): docs(index.docs), freqDictionary(index.freqDictionary){};
 /**
 * Обновить или заполнить базу документов, по которой будем совершать поиск
 * @param texts_input содержимое документов
@@ -35,10 +36,9 @@ public:
   std::vector<Entry> GetWordCount(const std::string& word);
 
 private:
-  static void UpdateDocumentTask(InvertedIndex* pThis, std::queue<std::pair<size_t, std::string*>> *inQueue, std::mutex *queueLock);
+  static void UpdateDocumentTask(InvertedIndex* pThis, std::queue<std::pair<size_t, std::string*>> *inQueue, std::mutex *queueLock, std::mutex *dictLock);
   std::vector<std::string> docs;
   std::map<std::string, std::vector<Entry>> freqDictionary;
-  std::mutex dictLock;
 };
 
 
