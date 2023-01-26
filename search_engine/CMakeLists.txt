@@ -33,14 +33,16 @@ include(GoogleTest)
 set (headers
   ConverterJSON.h 
   InvertedIndex.h
-  )
+  SearchServer.h
+)
 
 set (src
-  main.cpp
   ConverterJSON.cpp 
   InvertedIndex.cpp
+  main.cpp
+  SearchServer.cpp
   tests.cpp
-  )
+)
 
 add_executable(search_engine ${src} ${headers})
 target_link_libraries(search_engine PRIVATE nlohmann_json::nlohmann_json gtest_main)
