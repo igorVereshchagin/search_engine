@@ -44,6 +44,8 @@ set (src
   tests.cpp
 )
 
+add_compile_options(-g)
+
 add_executable(search_engine ${src} ${headers})
 target_link_libraries(search_engine PRIVATE nlohmann_json::nlohmann_json gtest_main)
 gtest_discover_tests(search_engine)

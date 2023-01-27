@@ -8,13 +8,10 @@
         "name": "C++ Launch",
         "type": "cppdbg",
         "request": "launch",
-        "targetArchitecture": "x86",
+        "targetArchitecture": "x86_64",
         "program": "${workspaceFolder}/build/search_engine.exe",
         "cwd":"${workspaceFolder}/build",
         "stopAtEntry": false,
-        // "customLaunchSetupCommands": [
-        //   { "text": "target-run", "description": "run target", "ignoreFailures": false }
-        // ],
         "launchCompleteCommand": "exec-run",
         "MIMode": "gdb",
         "miDebuggerPath": "C:\\tools\\mingw\\x86_64-8.1.0-release-posix-seh-rt_v6-rev0\\mingw64\\bin\\gdb.exe"
