@@ -1,7 +1,6 @@
 #include "SearchServer.h"
 #include <sstream>
 #include <algorithm>
-#include <iostream>
 
 std::vector<std::vector<RelativeIndex>> SearchServer::search(const std::vector<std::string>& queriesInput)
 {
@@ -17,7 +16,9 @@ std::vector<std::vector<RelativeIndex>> SearchServer::search(const std::vector<s
       ss >> word;
       uniqWords.push_back(word);
     }
-    std::unique(uniqWords.begin(), uniqWords.end());
+    std::sort(uniqWords.begin(), uniqWords.end());
+    uniqWords.erase(std::unique(uniqWords.begin(), uniqWords.end()), uniqWords.end());
+
 
     std::map<std::string, std::vector<Entry>> wordEntries;
     for (auto itUniqWords = uniqWords.begin(); itUniqWords != uniqWords.end(); itUniqWords++)
@@ -27,11 +28,6 @@ std::vector<std::vector<RelativeIndex>> SearchServer::search(const std::vector<s
         wordEntries.insert(std::make_pair(*itUniqWords, entry));
     }
     
-    for (auto it = wordEntries.begin(); it != wordEntries.end(); it++)
-    {
-
-    }
-
     std::vector<std::pair<std::string, int>> wordCount;
     for (auto itWordEntries = wordEntries.begin(); itWordEntries != wordEntries.end(); itWordEntries++)
     {
@@ -45,7 +41,9 @@ std::vector<std::vector<RelativeIndex>> SearchServer::search(const std::vector<s
     for (auto itWordEntries = wordEntries.begin(); itWordEntries != wordEntries.end(); itWordEntries++)
       for (auto itEntry = itWordEntries->second.begin(); itEntry != itWordEntries->second.end(); itEntry++)
         docsList.push_back(itEntry->docId);
-    std::unique(docsList.begin(), docsList.end());
+    std::sort(docsList.begin(), docsList.end());
+    docsList.erase(std::unique(docsList.begin(), docsList.end()), docsList.end());
+
 
     // for (auto itWordCount = wordCount.begin(); itWordCount != wordCount.end(); itWordCount++)
     // {
@@ -73,7 +71,7 @@ std::vector<std::vector<RelativeIndex>> SearchServer::search(const std::vector<s
       for (auto itAbsRel = absRelevancy.begin(); itAbsRel != absRelevancy.end(); itAbsRel++)
         if (itAbsRel->second > maxRelevancy)
           maxRelevancy = itAbsRel->second;
-      
+
       for (auto itAbsRel = absRelevancy.begin(); itAbsRel != absRelevancy.end(); itAbsRel++)
       {
         RelativeIndex relativeIndex = {itAbsRel->first, (double)(itAbsRel->second) / maxRelevancy};
@@ -81,13 +79,6 @@ std::vector<std::vector<RelativeIndex>> SearchServer::search(const std::vector<s
       }
     }
     ret.push_back(relativeIndexList);
-  }
-  for (auto it = ret.begin(); it != ret.end(); it++)
-  {
-    std::cout << "{" << std::endl;
-    for (auto it2 = it->begin(); it2 != it->end(); it2++)
-      std::cout << "  {" << it2->doc_id << ", " << it2->rank << "}, " << std::endl;
-    std::cout << "}" << std::endl;
   }
   return ret;
 }
