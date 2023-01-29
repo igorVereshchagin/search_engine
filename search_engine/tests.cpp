@@ -76,16 +76,17 @@ TEST(TestCaseSearchServer, TestSimple)
     "milk milk milk milk water water water",
     "milk water water",
     "milk milk milk milk milk water water water water water",
-    "americano cappuccino"
+    "americano cappuccino sugar"
   };
   const vector<string> request = {"milk water", "sugar"};
   const std::vector<vector<RelativeIndex>> expected = {
   {
-    {2, 1},
     {0, 0.7},
-    {1, 0.3}
+    {1, 0.3},
+    {2, 1}
   },
     {
+      {3, 1}
     }
   };
   InvertedIndex idx;
@@ -124,11 +125,28 @@ TEST(TestCaseSearchServer, TestTop5)
   const vector<string> request = {"moscow is the capital of russia"};
   const std::vector<vector<RelativeIndex>> expected = {
   {
+    {0, 0.6666667},
+    {1, 0.6666667},
+    {2, 0.6666667},
+    {3, 0.6666667},
+    {4, 0.6666667},
+    {5, 0.6666667},
+    {6, 0.6666667},
     {7, 1},
+    {8, 0.6666667},
+    {9, 0.6666667},
+    {10, 0.6666667},
+    {11, 0.6666667},
+    {12, 0.6666667},
+    {13, 0.6666667},
     {14, 1},
-    {0, 0.666666687},
-    {1, 0.666666687},
-    {2, 0.666666687}
+    {15, 0.6666667},
+    {16, 0.6666667},
+    {17, 0.6666667},
+    {18, 0.6666667},
+    {19, 0.6666667},
+    {20, 0.6666667},
+    {21, 0.6666667}
   }};
   InvertedIndex idx;
   idx.UpdateDocumentBase(docs);
