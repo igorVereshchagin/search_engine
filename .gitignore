@@ -36,3 +36,6 @@ cmake-build-debug
 search_engine/cmake-build-debug-coverage/
 answers.json
 **/build
+build.bat
+vscode.bat
+.vscode
