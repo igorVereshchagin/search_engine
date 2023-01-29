@@ -1,22 +1,41 @@
 #include <iostream>
 #include "ConverterJSON.h"
+#include "InvertedIndex.h"
+#include "SearchServer.h"
 
 #include "gtest/gtest.h"
 
 int main()
 {
   ::testing::InitGoogleTest();
-  return RUN_ALL_TESTS();
-  // ConverterJSON conv;
-  // std::vector<std::string> list = conv.GetTextDocuments();
-  // std::vector<std::vector<std::pair<int, float>>> answers;
-  // answers.resize(3);
-  // answers[0].resize(3);
-  // answers[0][0] = std::make_pair((int)0, (double)0.989);
-  // answers[0][1] = std::make_pair((int)1, (double)0.897);
-  // answers[0][2] = std::make_pair((int)2, (double)0.750);
-  // answers[1].resize(1);
-  // answers[1][0] = std::make_pair((int)0, (double)0.769);
-  // conv.putAnswers(answers);
-  // return 0;
+  int testRes = RUN_ALL_TESTS();
+  if (0 != testRes)
+    return testRes;
+  try
+  {
+    ConverterJSON conv;
+    InvertedIndex index;
+    index.UpdateDocumentBase(conv.GetTextDocuments());
+    SearchServer srv(index);
+    std::vector<std::vector<RelativeIndex>> relIndex = srv.search(conv.GetRequests());
+    std::vector<std::vector<std::pair<int, float>>> answersList;
+    for (auto itRelIndex = relIndex.begin(); itRelIndex != relIndex.end(); itRelIndex++)
+    {
+      std::vector<std::pair<int, float>> answer;
+      for (auto itItRelIndex = itRelIndex->begin(); itItRelIndex != itRelIndex->end(); itItRelIndex++)
+        answer.push_back(std::make_pair(itItRelIndex->doc_id, itItRelIndex->rank));
+      answersList.push_back(answer);
+    }
+    conv.putAnswers(answersList);
+  }
+  catch(const MissingConfig& e)
+  {
+    std::cerr << "MissingConfig" << std::endl;
+  }
+  catch(const EmptyConfig& e)
+  {
+    std::cerr << "EmptyConfig: " << e.what() << std::endl;
+  }
+      
+  return 0;
 }

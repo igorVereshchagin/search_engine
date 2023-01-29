@@ -7,7 +7,6 @@ std::vector<std::vector<RelativeIndex>> SearchServer::search(const std::vector<s
   std::vector<std::vector<RelativeIndex>> ret;
   for (auto itQueriesInput = queriesInput.begin(); itQueriesInput != queriesInput.end(); itQueriesInput++)
   {
-    std::vector<RelativeIndex> relativeIndexList;
     std::stringstream ss(*itQueriesInput);
     std::vector<std::string> uniqWords;
     while (!ss.eof())
@@ -44,16 +43,7 @@ std::vector<std::vector<RelativeIndex>> SearchServer::search(const std::vector<s
     std::sort(docsList.begin(), docsList.end());
     docsList.erase(std::unique(docsList.begin(), docsList.end()), docsList.end());
 
-
-    // for (auto itWordCount = wordCount.begin(); itWordCount != wordCount.end(); itWordCount++)
-    // {
-    //   std::vector<size_t> newDocsList;
-    //   for (auto itEntry = wordEntries[itWordCount->first].begin(); itEntry != wordEntries[itWordCount->first].end(); itEntry++)
-    //     if (std::find(docsList.begin(), docsList.end(), itEntry->docId) != docsList.end())
-    //       newDocsList.push_back(itEntry->docId);
-    //   docsList = newDocsList;
-    // }
-
+    std::vector<RelativeIndex> relativeIndexList;
     if (!docsList.empty())
     {
       std::map<size_t, size_t> absRelevancy;
@@ -77,6 +67,7 @@ std::vector<std::vector<RelativeIndex>> SearchServer::search(const std::vector<s
         RelativeIndex relativeIndex = {itAbsRel->first, (double)(itAbsRel->second) / maxRelevancy};
         relativeIndexList.push_back(relativeIndex);
       }
+      std::sort(relativeIndexList.begin(), relativeIndexList.end(), [](RelativeIndex &a, RelativeIndex &b){return a.rank > b.rank;});
     }
     ret.push_back(relativeIndexList);
   }

@@ -6,44 +6,71 @@
 #include <iostream>
 #include <fstream>
 
-
-std::vector<std::string> ConverterJSON::GetTextDocuments()
+ConverterJSON::ConverterJSON()
 {
-  std::vector<std::string> docList;
-  nlohmann::json configDict;
-  std::ifstream configFile("..\\config.json");
+  std::ifstream configFile(".\\config.json");
   if (!configFile.is_open())
     throw (MissingConfig());
   configFile >> configDict;
   configFile.close();
+  auto configIt = configDict.find("config");
+  if (configIt == configDict.end())
+    throw (EmptyConfig("no config section!"));
+  std::string name;
+  if (configIt->find("name") != configIt->end())
+    name = configIt->find("name").value();
+  std::cout << "Starting " << name << std::endl;
+}
+
+std::vector<std::string> ConverterJSON::GetTextDocuments()
+{
+  std::vector<std::string> docList;
+  std::vector<std::string> fileList;
+
   auto filesIt = configDict.find("files");
   if (filesIt != configDict.end())
-    readDict(filesIt.value(), docList);
+    readDict(filesIt.value(), fileList);
+  for (auto itFileList = fileList.begin(); itFileList != fileList.end(); itFileList++)
+  {
+    std::string docStr;
+    std::ifstream docFile(*itFileList);
+    if (docFile.is_open())
+    {
+      int counter = 0;
+      while(!docFile.eof())
+      {
+        std::string word;
+        docFile >> word;
+        if (word.length() <= 100)
+          docStr += " " + word;
+        if (++counter == 1000)
+          break;
+      }
+      docFile.close();
+    }
+    else
+    {
+      std::cout << "Can't open file: " << *itFileList << std::endl;
+    }
+    docList.push_back(docStr);
+  }
   return docList;
 }
 
 int ConverterJSON::GetResponsesLimit()
 {
-  nlohmann::json configDict;
-  std::ifstream configFile("..\\config.json");
-  if (!configFile.is_open())
-    throw (MissingConfig());
-  configFile >> configDict;
-  configFile.close();
-  int maxResp = 0;
-  auto configIt = configDict.find("config");
-  if (configIt != configDict.end())
-    maxResp = parseConfig(configIt.value(), "max_responses");
+  auto it = configDict.find("config").value().find("max_responses");
+  if (it == configDict.find("config").value().end())
+    throw(EmptyConfig("no max_responses!"));
   else
-    throw (EmptyConfig());
-  return maxResp;
+    return it.value();
 }
 
 std::vector<std::string> ConverterJSON::GetRequests()
 {
   std::vector<std::string> reqList;
   nlohmann::json reqDict;
-  std::ifstream reqFile("..\\requests.json");
+  std::ifstream reqFile(".\\requests.json");
   if (reqFile.is_open())
   {
     reqFile >> reqDict;
@@ -58,12 +85,13 @@ std::vector<std::string> ConverterJSON::GetRequests()
 void ConverterJSON::putAnswers(std::vector<std::vector<std::pair<int, float>>> answers)
 {
   nlohmann::json ansDict;
+  int maxResp = GetResponsesLimit();
   for (int i = 0; i < answers.size(); i++)
   {
     std::string respName = "response" + std::to_string(i + 1);
-    auto ansIt = answers[i].begin();
-    ansDict["answers"][respName]["result"] = ansIt != answers[i].end() ? "true" : "false";
-    for (; ansIt != answers[i].end(); ansIt++)
+    ansDict["answers"][respName]["result"] = answers[i].begin() != answers[i].end() ? "true" : "false";
+    int cnt = 0;
+    for (auto ansIt = answers[i].begin(); cnt < maxResp && ansIt != answers[i].end(); cnt++, ansIt++)
     {
       nlohmann::json tDict;
       tDict["docid"] = ansIt->first;
@@ -71,10 +99,14 @@ void ConverterJSON::putAnswers(std::vector<std::vector<std::pair<int, float>>> a
       ansDict["answers"][respName]["relevance"].push_back(tDict);
     }
   }
-  std::ofstream ansFile("..\\answers.json");
+  std::ofstream ansFile(".\\answers.json");
   if (ansFile.is_open())
   {
     ansFile << ansDict;
     ansFile.close();
+  }
+  else
+  {
+    std::cout << "Unable to open file: answers.json" << std::endl;
   }
 }

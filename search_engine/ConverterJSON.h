@@ -9,12 +9,19 @@
 #include <exception>
 
 class MissingConfig : public std::exception {};
-class EmptyConfig : public std::exception {};
+class EmptyConfig : public std::exception 
+{
+public:
+  EmptyConfig(const std::string& str): std::exception(), details(str){}
+  const char* what() const _GLIBCXX_TXN_SAFE_DYN _GLIBCXX_USE_NOEXCEPT  {  return details.c_str();  }
+private:
+  std::string details;
+};
 
 class ConverterJSON
 {
 public:
-  ConverterJSON() = default;
+  ConverterJSON();
 ///**
 //* Метод получения содержимого файлов
 //* @return Возвращает список с содержимым файлов перечисленных
@@ -38,20 +45,11 @@ public:
   void putAnswers(std::vector<std::vector<std::pair<int, float>>> answers);
 
 private:
-  std::string name = "default name";
-  std::string version = "0.1";
-  int maxResponses = 5;
+  nlohmann::json configDict;
   static void readDict(const nlohmann::json &dict, std::vector<std::string> &list)
   {
     for (auto it = dict.begin(); it != dict.end(); it++)
       list.push_back(it.value());
-  }
-  auto parseConfig(const nlohmann::json &dict, const std::string key)
-  {
-    for (auto it = dict.begin(); it != dict.end(); it++)
-      if (it.key() == key)
-        return it.value();
-    return dict.end().value();
   }
 };
 
