@@ -1,7 +1,7 @@
 # SearchEngine
 # What is it?
 It is console application, which can index text files, search requested text in files and output results sorted by relevance.
-# What technologies is used?
+# What technologies are used?
 * C++
 * MinGW
 * Nlohmann JSON
