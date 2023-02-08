@@ -64,7 +64,7 @@ std::vector<std::vector<RelativeIndex>> SearchServer::search(const std::vector<s
 
       for (auto itAbsRel = absRelevancy.begin(); itAbsRel != absRelevancy.end(); itAbsRel++)
       {
-        RelativeIndex relativeIndex = {itAbsRel->first, (double)(itAbsRel->second) / maxRelevancy};
+        RelativeIndex relativeIndex = {itAbsRel->first, (float)(itAbsRel->second) / maxRelevancy};
         relativeIndexList.push_back(relativeIndex);
       }
       std::sort(relativeIndexList.begin(), relativeIndexList.end(), [](RelativeIndex &a, RelativeIndex &b){return a.rank > b.rank;});
