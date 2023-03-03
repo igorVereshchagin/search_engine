@@ -11,6 +11,7 @@ set(SrcFiles
 set(TestsFiles
   InvertedIndex_test.cpp
   SearchServer_test.cpp
+  tests_main.cpp
 #	ConverterJSON_test.cpp
 )
 

@@ -1,6 +1,8 @@
-#include "SearchEngine.h"
+#include "SearchServer.h"
+#include "InvertedIndex.h"
 #include "gtest/gtest.h"
 
+using namespace std;
 TEST(TestCaseSearchServer, TestSimple) 
 {
   const vector<string> docs = {

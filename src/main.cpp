@@ -3,14 +3,8 @@
 #include "InvertedIndex.h"
 #include "SearchServer.h"
 
-#include "gtest/gtest.h"
-
 int main()
 {
-  ::testing::InitGoogleTest();
-  int testRes = RUN_ALL_TESTS();
-  if (0 != testRes)
-    return testRes;
   try
   {
     ConverterJSON conv;
